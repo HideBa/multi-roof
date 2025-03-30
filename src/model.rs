@@ -310,7 +310,7 @@ impl Model {
 
         // Debug: print the ground faces
         // =====================================
-        println!("Ground faces: {:?}", ground_faces);
+        // println!("Ground faces: {:?}", ground_faces);
         // =====================================
 
         self.faces
@@ -485,11 +485,16 @@ impl Model {
             }
         }
 
-        // Boundary edges appear exactly once
-        edge_count
+        // if edge count is not 2, it is a boundary edge
+        let boundaries = edge_count
             .iter()
-            .filter_map(|(&edge, &count)| if count == 1 { Some(edge) } else { None })
-            .collect()
+            .filter_map(|(&edge, &count)| if count != 2 { Some(edge) } else { None })
+            .collect::<Vec<_>>();
+
+        //debug
+        println!("Boundaries: {:?}", boundaries);
+
+        boundaries
     }
 
     /// Order boundary edges to form a continuous loop
@@ -531,7 +536,6 @@ impl Model {
                 // If we couldn't find a connecting edge, the boundary might be disconnected
                 // Just add the next edge and continue
                 if !remaining_edges.is_empty() {
-                    println!("Remaining edges: {:?}", remaining_edges);
                     let edge = remaining_edges.remove(0);
                     ordered_vertices.push(edge.0);
                     ordered_vertices.push(edge.1);
@@ -652,6 +656,11 @@ impl Model {
         let mut rec = rerun::RecordingStreamBuilder::new("lodconv.rrd").spawn()?;
         self.visualize(&mut rec, "only ground")?;
         // =====================================
+
+        // Create a path under the current working directory
+        let current_dir = std::env::current_dir()?;
+        let output_path = current_dir.join("onlyground_od1_2.obj");
+        self.write_obj(&output_path)?;
 
         // Step 4: Extrude the ground surface to the target height
         self.extrude_to_lod1(target_height);
