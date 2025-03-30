@@ -11,6 +11,7 @@ use std::path::Path;
 pub const EPSILON: f64 = 1e-6; // epsilon for floating point comparison
 pub const WALL_ANGLE_THRESHOLD: f64 = 0.01; // angle threshold for wall against the up vector
 pub const GROUND_HEIGHT_THRESHOLD: f64 = 1.0; // height threshold for ground. Assuming all ground surfaces vertices are within 1.0 m of min z value
+pub const ROOF_HEIGHT_PERCENTILE: f64 = 0.7; // percentile of roof height to use for LoD1.2 height. Default is 70% which follows 3DBAG decisions
 
 /// Convert a LoD2.2 OBJ file to a LoD1.2 OBJ file
 pub fn convert_lod(input_path: &Path, output_path: &Path, visualize: bool) -> Result<()> {

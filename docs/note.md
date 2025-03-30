@@ -117,6 +117,9 @@ TODO: write pros and cons
 #### Option 1 (I've used this)
 
 I've used the weighted average of roof surface heights for the lower LoD model.
+The height of the roof surface is calculated by the following formula:
+
+`h = (max(z) - min(z)) * ROOF_HEIGHT_PERCENTILE * area / sum(area)`
 
 * Pros:
   * Simple and fast

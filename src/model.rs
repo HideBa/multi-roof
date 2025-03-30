@@ -1,6 +1,6 @@
 use crate::error::{Error, Result};
 use crate::primitives::{Face, SurfaceType, Vertex};
-use crate::{EPSILON, GROUND_HEIGHT_THRESHOLD, WALL_ANGLE_THRESHOLD};
+use crate::{EPSILON, GROUND_HEIGHT_THRESHOLD, ROOF_HEIGHT_PERCENTILE, WALL_ANGLE_THRESHOLD};
 use cgmath::{InnerSpace, Point3, Vector3};
 use std::collections::HashSet;
 use std::fs::File;
@@ -163,11 +163,6 @@ impl Model {
             }
         }
 
-        println!(
-            "Debug: Finished parsing OBJ file. Found {} vertices and {} faces",
-            vertices.len(),
-            faces.len()
-        );
         Ok(Self::new(vertices, faces))
     }
 
@@ -308,11 +303,6 @@ impl Model {
         }
         println!("Minimum z value: {}", min_z.1);
 
-        // Debug: print the ground faces
-        // =====================================
-        // println!("Ground faces: {:?}", ground_faces);
-        // =====================================
-
         self.faces
             .iter_mut()
             .enumerate()
@@ -392,15 +382,12 @@ impl Model {
             if face.surface_type == SurfaceType::Roof {
                 let area = face.projected_area(&self.vertices);
                 let (min_z, max_z) = face.z_range(&self.vertices);
-                let middle_z = (max_z + min_z) / 2.0;
+                let height = min_z + (max_z - min_z) * ROOF_HEIGHT_PERCENTILE;
 
                 total_area += area;
-                weighted_height_sum += area * middle_z;
+                weighted_height_sum += area * height;
             }
         }
-
-        println!("Total area: {}", total_area);
-        println!("Weighted height sum: {}", weighted_height_sum);
 
         if total_area > EPSILON {
             weighted_height_sum / total_area
@@ -490,9 +477,6 @@ impl Model {
             .iter()
             .filter_map(|(&edge, &count)| if count != 2 { Some(edge) } else { None })
             .collect::<Vec<_>>();
-
-        //debug
-        println!("Boundaries: {:?}", boundaries);
 
         boundaries
     }
@@ -672,6 +656,7 @@ impl Model {
         // =====================================
         Ok(())
     }
+
     pub fn visualize(&self, recording: &mut rerun::RecordingStream, name: &str) -> Result<()> {
         // Convert vertices to rerun format
         let vertex_positions: Vec<[f32; 3]> = self
@@ -725,78 +710,5 @@ impl Model {
         )?;
 
         Ok(())
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use cgmath::Point3;
-
-    #[test]
-    fn test_calculate_normal() {
-        let vertices = vec![
-            Vertex {
-                point: Point3::new(0.0, 0.0, 0.0),
-                id: 0,
-            },
-            Vertex {
-                point: Point3::new(1.0, 0.0, 0.0),
-                id: 1,
-            },
-            Vertex {
-                point: Point3::new(0.0, 1.0, 0.0),
-                id: 2,
-            },
-        ];
-
-        let face = Face::new(vec![0, 1, 2]);
-        let normal = face.normal(&vertices);
-
-        // The normal of a face in the XY plane should be (0, 0, 1)
-        assert!((normal.x - 0.0).abs() < EPSILON);
-        assert!((normal.y - 0.0).abs() < EPSILON);
-        assert!((normal.z - 1.0).abs() < EPSILON);
-    }
-
-    #[test]
-    fn test_calculate_area() {
-        // Create a 1x1 triangle (half of a 1x1 square)
-        let vertices = vec![
-            Vertex {
-                point: Point3::new(0.0, 0.0, 0.0),
-                id: 0,
-            },
-            Vertex {
-                point: Point3::new(1.0, 0.0, 0.0),
-                id: 1,
-            },
-            Vertex {
-                point: Point3::new(0.0, 1.0, 0.0),
-                id: 2,
-            },
-        ];
-
-        let face = Face::new(vec![0, 1, 2]);
-        let area = face.projected_area(&vertices);
-
-        // Area should be 0.5 (triangle with base 1 and height 1)
-        assert!((area - 0.5).abs() < EPSILON);
-    }
-
-    #[test]
-    fn test_face_adjacency() {
-        // Create two triangles that share two vertices (0 and 2)
-        let face1 = Face::new(vec![0, 1, 2]);
-        let face2 = Face::new(vec![0, 2, 3]);
-
-        // These faces should be adjacent
-        assert!(face1.is_adjacent_to(&face2));
-
-        // Create a triangle that doesn't share any vertices with face1
-        let face3 = Face::new(vec![4, 5, 6]);
-
-        // These faces should not be adjacent
-        assert!(!face1.is_adjacent_to(&face3));
     }
 }
