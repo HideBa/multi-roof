@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use lodconv::{convert_lod, Model, Result};
+use lodconv::{convert_lod, Result};
 use std::path::PathBuf;
 
 /// Command line arguments
@@ -27,7 +27,7 @@ enum Command {
         verbose: bool,
 
         /// Whether to visualize the model
-        #[arg(short, long)]
+        #[arg(short = 'z', long)]
         visualize: bool,
     },
 }

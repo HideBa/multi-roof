@@ -9,8 +9,8 @@ pub use primitives::{Face, SurfaceType, Vertex};
 use std::path::Path;
 
 pub const EPSILON: f64 = 1e-6; // epsilon for floating point comparison
-pub const WALL_ANGLE_THRESHOLD: f64 = 0.01; // angle threshold for wall against the up vector
-pub const GROUND_HEIGHT_THRESHOLD: f64 = 1.0; // height threshold for ground. Assuming all ground surfaces vertices are within 1.0 m of min z value
+pub const WALL_ANGLE_THRESHOLD: f64 = 0.05; // angle threshold for wall against the up vector
+pub const GROUND_HEIGHT_THRESHOLD: f64 = 1.5; // height threshold for ground. Assuming all ground surfaces vertices are within 1.0 m of min z value
 
 /// Convert a LoD2.2 OBJ file to a LoD1.2 OBJ file
 pub fn convert_lod(input_path: &Path, output_path: &Path, visualize: bool) -> Result<()> {
@@ -18,7 +18,7 @@ pub fn convert_lod(input_path: &Path, output_path: &Path, visualize: bool) -> Re
     let mut rec = rerun::RecordingStreamBuilder::new("lodconv.rrd").spawn()?;
     println!("Starting visualization viewer...");
 
-    let mut model = Model::from_obj(input_path)?;
+    let mut model = Model::read_obj(input_path)?;
     // Visualize the model
     if visualize {
         model.visualize(&mut rec, "lod2_2")?;
