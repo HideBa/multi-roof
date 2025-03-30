@@ -521,8 +521,8 @@ impl Model {
                 // Just add the next edge and continue
                 if !remaining_edges.is_empty() {
                     let edge = remaining_edges.remove(0);
-                    // ordered_vertices.push(edge.0);
-                    // ordered_vertices.push(edge.1);
+                    ordered_vertices.push(edge.0);
+                    ordered_vertices.push(edge.1);
                 }
             }
         }
