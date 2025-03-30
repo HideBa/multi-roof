@@ -25,10 +25,6 @@ enum Command {
         /// Enable verbose logging
         #[arg(short, long)]
         verbose: bool,
-
-        /// Whether to visualize the model
-        #[arg(short = 'z', long)]
-        visualize: bool,
     },
 }
 
@@ -40,13 +36,12 @@ fn main() -> Result<()> {
             input,
             output,
             verbose,
-            visualize,
         } => {
             if verbose {
                 println!("Converting {} to {}", input.display(), output.display());
             }
 
-            convert_lod(&input, &output, visualize)?;
+            convert_lod(&input, &output)?;
 
             if verbose {
                 println!("Conversion completed successfully!");

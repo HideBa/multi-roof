@@ -521,8 +521,8 @@ impl Model {
                 // Just add the next edge and continue
                 if !remaining_edges.is_empty() {
                     let edge = remaining_edges.remove(0);
-                    ordered_vertices.push(edge.0);
-                    ordered_vertices.push(edge.1);
+                    // ordered_vertices.push(edge.0);
+                    // ordered_vertices.push(edge.1);
                 }
             }
         }
@@ -637,8 +637,8 @@ impl Model {
 
         // Debug: visualize the model with only ground surfaces
         // =====================================
-        let mut rec = rerun::RecordingStreamBuilder::new("lodconv.rrd").spawn()?;
-        self.visualize(&mut rec, "only ground")?;
+        // let mut rec = rerun::RecordingStreamBuilder::new("lodconv.rrd").spawn()?;
+        // self.visualize(&mut rec, "only ground")?;
         // =====================================
 
         // Create a path under the current working directory

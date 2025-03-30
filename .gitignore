@@ -20,4 +20,3 @@ target/
 
 /target
 .DS_Store
-/data/output/*

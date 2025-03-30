@@ -9,10 +9,10 @@ build:
 
 # Run the project with conversion
 conv:
-	cargo run -- convert -z --input ./data/input/simple.obj --output ./data/output/simple.obj
-	cargo run -- convert -z --input ./data/input/beeb.obj --output ./data/output/beeb.obj
-	cargo run -- convert -z --input ./data/input/bk.obj --output ./data/output/bk.obj
-	cargo run -- convert -z --input ./data/input/otb.obj --output ./data/output/otb.obj
+	cargo run -- convert --input ./data/input/simple.obj --output ./data/output/simple.obj
+	cargo run -- convert --input ./data/input/beeb.obj --output ./data/output/beeb.obj
+	cargo run -- convert --input ./data/input/bk.obj --output ./data/output/bk.obj
+	cargo run -- convert --input ./data/input/otb.obj --output ./data/output/otb.obj
 
 # Run linting and formatting checks
 check:

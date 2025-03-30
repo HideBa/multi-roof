@@ -2,6 +2,9 @@
 
 A tool to convert LoD2.2 building models to LoD1.2.
 
+> [!NOTE]
+> The latest report of this project is [here](https://hideba.notion.site/Conversion-of-LoD2-2-to-LoD1-2-Building-Models-PhD-assignment-1c5f6b6336e080caa688e74790944a6d?pvs=4).
+
 ## Overview
 
 This tool takes a 3D building model in LoD2.2 (detailed roof structures) and converts it to LoD1.2 (block-shaped representation with flat roof). The conversion process involves:
